@@ -43,7 +43,7 @@ module Venice
         # > Only returned for iOS 6 style transaction receipts for auto-renewable subscriptions.
         # > The JSON representation of the receipt for the most recent renewal
         if latest_receipt_info_attributes = json['latest_receipt_info']
-          receipt.latest_receipt = Receipt.new(latest_receipt_info_attributes.last)
+          receipt.latest_receipt = InAppReceipt.new(latest_receipt_info_attributes.last)
         end
 
         return receipt
