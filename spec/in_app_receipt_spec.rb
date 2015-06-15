@@ -34,7 +34,7 @@ describe Venice::InAppReceipt do
     its(:app_item_id) { 'com.foo.app1' }
     its(:version_external_identifier) { "123" }
     its(:original) { should be_instance_of Venice::InAppReceipt }
-    its(:expires_at) { should be_instance_of Time }
+    its(:expires_at) { should be_instance_of DateTime }
 
     it "should parse the 'original' attributes" do
       subject.original.should be_instance_of Venice::InAppReceipt

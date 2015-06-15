@@ -24,7 +24,6 @@ describe Venice::Client do
       let(:secret) { "shhhhhh" }
 
       before do
-        client.shared_secret = secret
         Venice::Receipt.stub :new
       end
 
@@ -33,7 +32,7 @@ describe Venice::Client do
           post.body.should eq({'receipt-data' => receipt_data, 'password' => secret}.to_json)
           post
         end
-        client.verify! receipt_data
+        client.verify! receipt_data, shared_secret: secret
       end
     end
 
@@ -47,32 +46,35 @@ describe Venice::Client do
           'status' => 0,
           'receipt' => {},
           'latest_receipt' => "<encoded string>",
-          'latest_receipt_info' =>  {
-            "original_purchase_date_pst" => "2012-12-30 09:39:24 America/Los_Angeles",
-            "unique_identifier" => "0000b01147b8",
-            "original_transaction_id" => "1000000061051565",
-            "expires_date" => "1365114731000",
-            "transaction_id" => "1000000070104252",
+          'latest_receipt_info' =>  [ {
+            "expires_date" => "2015-06-10 08:37:06 Etc/GMT",
+            "expires_date_ms" => "1433925426000",
+            "expires_date_pst" => "2015-06-10 01:37:06 America/Los_Angeles",
+            "is_trial_period" => "true",
+            "original_purchase_date" => "2015-06-10 08:34:07 Etc/GMT",
+            "original_purchase_date_ms" => "1433925247000",
+            "original_purchase_date_pst" => "2015-06-10 01:34:07 America/Los_Angeles",
+            "original_transaction_id" => "1000000158662856",
+            "product_id" => "blloon.unlimited.trial",
+            "purchase_date" => "2015-06-10 08:34:06 Etc/GMT",
+            "purchase_date_ms" => "1433925246000",
+            "purchase_date_pst" => "2015-06-10 01:34:06 America/Los_Angeles",
             "quantity" => "1",
-            "product_id" => "com.ficklebits.nsscreencast.monthly_sub",
-            "original_purchase_date_ms" => "1356889164000",
-            "bid" => "com.ficklebits.nsscreencast",
-            "web_order_line_item_id" => "1000000026812043",
-            "bvrs" => "0.1",
-            "expires_date_formatted" => "2013-04-04 22:32:11 Etc/GMT",
-            "purchase_date" => "2013-04-04 22:27:11 Etc/GMT",
-            "purchase_date_ms" => "1365114431000",
-            "expires_date_formatted_pst" => "2013-04-04 15:32:11 America/Los_Angeles",
-            "purchase_date_pst" => "2013-04-04 15:27:11 America/Los_Angeles",
-            "original_purchase_date" => "2012-12-30 17:39:24 Etc/GMT",
-            "item_id" => "590265423"
-          }
+            "transaction_id" => "1000000158662856",
+            "web_order_line_item_id" => "1000000029907341"
+          } ]
         }
       end
 
       it "should create a latest receipt" do
         receipt = client.verify! 'asdf'
-        receipt.latest_receipt.should_not be_nil
+        receipt.latest_receipt.should be_a(Array)
+      end
+
+      it "should create a latest receipt" do
+        receipt = client.verify! 'asdf'
+        last_tx = receipt.latest_receipt.last
+        last_tx.transaction_id.should == "1000000158662856"
       end
     end
 
