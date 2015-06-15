@@ -9,6 +9,7 @@ end
 
 require 'venice'
 require 'rspec'
+require 'pry'
 
 RSpec.configure do |config|
 

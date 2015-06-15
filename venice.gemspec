@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rspec", "~> 2.99.0"
   s.add_development_dependency "rake"
   s.add_development_dependency "simplecov"
+  s.add_development_dependency "pry-byebug"
 
   s.files         = Dir["./**/*"].reject { |file| file =~ /\.\/(bin|log|pkg|script|spec|test|vendor)/ }
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")

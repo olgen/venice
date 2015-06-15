@@ -41,11 +41,12 @@ describe Venice::Client do
         client.stub(:json_response_from_verifying_data).and_return(response)
       end
 
+      let(:latest_receipt_data) { "<encoded string>" }
       let(:response) do
         {
           'status' => 0,
           'receipt' => {},
-          'latest_receipt' => "<encoded string>",
+          'latest_receipt' => latest_receipt_data,
           'latest_receipt_info' =>  [ {
             "expires_date" => "2015-06-10 08:37:06 Etc/GMT",
             "expires_date_ms" => "1433925426000",
@@ -68,12 +69,13 @@ describe Venice::Client do
 
       it "should create a latest receipt" do
         receipt = client.verify! 'asdf'
-        receipt.latest_receipt.should be_a(Array)
+        receipt.latest_receipt.should == latest_receipt_data
+        receipt.latest_receipt_info.should be_a(Array)
       end
 
       it "should create a latest receipt" do
         receipt = client.verify! 'asdf'
-        last_tx = receipt.latest_receipt.last
+        last_tx = receipt.latest_receipt_info.last
         last_tx.transaction_id.should == "1000000158662856"
       end
     end

@@ -29,7 +29,12 @@ module Venice
     attr_reader :download_id
     attr_reader :requested_at
 
+    # For auto-renewable subscriptions:
+    # the 'receipt-data' base64 representation of the last receipt
+    # if happened after the current receipt
     attr_accessor :latest_receipt
+    # the in_app-transactions part of the last receipt
+    attr_accessor :latest_receipt_info
 
     def initialize(attributes = {})
       @bundle_id = attributes['bundle_id']
@@ -47,13 +52,16 @@ module Venice
       @download_id = attributes['download_id']
       @requested_at = DateTime.parse(attributes['request_date']) if attributes['request_date']
 
-      @in_app = []
-      if attributes['in_app']
-        attributes['in_app'].each do |in_app_purchase_attributes|
-          @in_app << InAppReceipt.new(in_app_purchase_attributes)
-        end
-      end
+      @in_app = map_iap_receipts(attributes['in_app'] || [])
+      init_latest_receipt(attributes)
+    end
 
+    def init_latest_receipt(attributes)
+      # From Apple docs:
+      # > Only returned for iOS 6 style transaction receipts for auto-renewable subscriptions.
+      # > The JSON representation of the receipt for the most recent renewal
+      @latest_receipt_info = map_iap_receipts(attributes['latest_receipt_info'] || [])
+      @latest_receipt = attributes['latest_receipt']
     end
 
     def to_hash
@@ -68,13 +76,20 @@ module Venice
         :download_id => @download_id,
         :requested_at => (@requested_at.httpdate rescue nil),
         :in_app => @in_app.map{|iap| iap.to_h },
-        :latest_receipt => @latest_receipt
+        :latest_receipt_info => @latest_receipt_info.map{|iap| iap.to_h },
+        :latest_receipt => @latest_receipt,
       }
     end
     alias_method :to_h, :to_hash
 
     def to_json
       self.to_hash.to_json
+    end
+
+    def map_iap_receipts(receipt_hashes)
+      receipt_hashes.map do |tx|
+        InAppReceipt.new(tx)
+      end
     end
 
     class << self

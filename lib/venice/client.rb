@@ -37,18 +37,11 @@ module Venice
 
       case status
       when 0, 21006
-        receipt = Receipt.new(receipt_attributes)
-
-        # From Apple docs:
-        # > Only returned for iOS 6 style transaction receipts for auto-renewable subscriptions.
-        # > The JSON representation of the receipt for the most recent renewal
-        if latest_receipt_transactions = json['latest_receipt_info']
-          receipt.latest_receipt = latest_receipt_transactions.map do |tx|
-            InAppReceipt.new(tx)
-          end
-        end
-
-        return receipt
+        attributes = (receipt_attributes || {}).merge({
+          'latest_receipt' => json['latest_receipt'],
+          'latest_receipt_info' => json['latest_receipt_info'],
+        })
+        Receipt.new(attributes)
       else
         raise Receipt::VerificationError.new(status, receipt)
       end
