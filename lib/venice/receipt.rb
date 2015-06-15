@@ -52,11 +52,11 @@ module Venice
       @download_id = attributes['download_id']
       @requested_at = DateTime.parse(attributes['request_date']) if attributes['request_date']
 
-      @in_app = map_iap_receipts(attributes['in_app'] || [])
-      init_latest_receipt(attributes)
+      init_iap_receipts(attributes)
     end
 
-    def init_latest_receipt(attributes)
+    def init_iap_receipts(attributes)
+      @in_app = map_iap_receipts(attributes['in_app'] || [])
       # From Apple docs:
       # > Only returned for iOS 6 style transaction receipts for auto-renewable subscriptions.
       # > The JSON representation of the receipt for the most recent renewal
