@@ -43,7 +43,7 @@ module Venice
         })
         Receipt.new(attributes)
       else
-        raise Receipt::VerificationError.new(status, receipt)
+        raise Receipt::VerificationError.new(status, receipt_attributes)
       end
     end
 

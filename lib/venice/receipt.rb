@@ -122,11 +122,11 @@ module Venice
 
     class VerificationError < StandardError
       attr_accessor :code
-      attr_accessor :receipt
+      attr_accessor :receipt_attributes
 
-      def initialize(code, receipt)
+      def initialize(code, receipt_attributes)
         @code = Integer(code)
-        @receipt = receipt
+        @receipt_attributes = receipt_attributes
       end
 
       def message
