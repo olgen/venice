@@ -3,9 +3,9 @@ $:.push File.expand_path("../lib", __FILE__)
 require "venice/version"
 
 Gem::Specification.new do |s|
-  s.name        = "venice"
-  s.authors     = ["Mattt Thompson"]
-  s.email       = "m@mattt.me"
+  s.name        = "fattaholmanan-venice"
+  s.authors     = ["Ali Fattaholmanan"]
+  s.email       = "fattah@pichak.co"
   s.license     = "MIT"
   s.homepage    = "http://nomad-cli.com"
   s.version     = Venice::VERSION
